@@ -1,24 +1,40 @@
 {
   "name": "Convertisseur Pro",
   "short_name": "ConvertPro",
+  "id": "/convertisseur-pro/",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "minimal-ui"],
   "background_color": "#6366f1",
   "theme_color": "#0f172a",
   "orientation": "portrait",
-  "description": "Convertisseur de chiffres en lettres et devises.",
+  "description": "Convertisseur de chiffres en lettres et devises avec calculatrice intégrée.",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": ["productivity", "finance", "utilities"],
   "icons": [
-    {
-      "src": "./icon.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
     {
       "src": "./icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screen1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Écran principal"
+    },
+    {
+      "src": "./screen1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Version Mobile"
     }
   ]
 }
