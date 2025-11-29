@@ -6,7 +6,7 @@
     <title>Convertisseur Pro</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5198/5198460.png">
+    <link rel="apple-touch-icon" href="./icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #f1f5f9; --text: #1e293b; --primary: #4f46e5; --dark: #0f172a; }
@@ -118,7 +118,7 @@
     </div>
 
     <div id="install-prompt">
-        <img src="https://cdn-icons-png.flaticon.com/512/5198/5198460.png" class="install-icon" alt="Icon">
+        <img src="./icon.png" class="install-icon" alt="Icon">
         <div class="install-title">Installer l'application</div>
         <div class="install-desc">Installez Convertisseur Pro pour un accès rapide et hors ligne.</div>
         
@@ -221,24 +221,20 @@
         const installModal = document.getElementById('install-prompt');
         const installBtn = document.getElementById('btn-install');
         const iosHelp = document.getElementById('ios-help');
-
-        // Détection si on est déjà en mode App (Standalone)
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
         if (!isStandalone) {
-            // Android / Chrome
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
-                setTimeout(() => installModal.classList.add('show'), 2000); // Affiche après 2s
+                setTimeout(() => installModal.classList.add('show'), 2000);
             });
 
-            // iOS (Pas d'événement automatique, on check juste l'agent)
             if (isIOS) {
                 setTimeout(() => {
-                    installBtn.style.display = 'none'; // Cache le bouton Android
-                    iosHelp.style.display = 'block'; // Affiche l'aide iOS
+                    installBtn.style.display = 'none'; 
+                    iosHelp.style.display = 'block'; 
                     installModal.classList.add('show');
                 }, 2000);
             }
@@ -248,17 +244,13 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        installModal.classList.remove('show');
-                    }
+                    if (choiceResult.outcome === 'accepted') { installModal.classList.remove('show'); }
                     deferredPrompt = null;
                 });
             }
         });
 
-        function closeInstall() {
-            installModal.classList.remove('show');
-        }
+        function closeInstall() { installModal.classList.remove('show'); }
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').then(reg => { reg.update(); });
