@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.tahar_chibani06.twa",
+        "sha256_cert_fingerprints": ["6A:B3:61:E0:7B:6E:E6:E6:83:B7:9E:85:96:9C:BF:58:EC:04:DB:DF:B7:9B:84:84:2D:4C:B6:8B:26:1A:8F:57"]
+      }
+    }]
