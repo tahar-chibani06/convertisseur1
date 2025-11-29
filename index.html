@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#0f172a">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Intégré - Pas de téléchargement externe nécessaire */
+        /* CSS Intégré */
         :root { --bg: #f1f5f9; --text: #1e293b; --primary: #4f46e5; --dark: #0f172a; }
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .font-arabic { font-family: 'Tajawal', sans-serif; }
@@ -100,7 +100,6 @@
     </div>
 
     <script>
-        // --- LOGIQUE METIER (Même logique que React mais en pur JS) ---
         let state = { expr: '', val: 0, lang: 'fr', cur: 'DZD', mode: 'currency', tpl: 'none' };
         const config = {
             currencies: {
@@ -115,12 +114,10 @@
             }
         };
 
-        // Fonctions de conversion (Minifiées pour tenir ici)
         function cFr(n){if(n===0)return"";const u=['','un','deux','trois','quatre','cinq','six','sept','huit','neuf'],te=['dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'],ts=['','dix','vingt','trente','quarante','cinquante','soixante','soixante-dix','quatre-vingt','quatre-vingt-dix'];if(n<10)return u[n];if(n<20)return te[n-10];if(n<100){const t=Math.floor(n/10),r=n%10;if(t===7||t===9){const o=t===7?60:80,p=t===7?"soixante":"quatre-vingt",c=(t===7&&r===1)?" et ":"-";if(n===80)return"quatre-vingts";return p+c+cFr(n-o)}const tw=ts[t];if(r===0)return tw;if(r===1&&t!==8)return tw+" et un";return tw+"-"+u[r]}if(n<1000){if(n===100)return"cent";const h=Math.floor(n/100),r=n%100,hw=(h>1&&r===0)?"cents":"cent",p=h===1?"":u[h]+" ";return p+hw+(r===0?"":" "+cFr(r))}const ch=[{v:1e9,l:"milliard"},{v:1e6,l:"million"},{v:1e3,l:"mille"}];for(let c of ch){if(n>=c.v){const q=Math.floor(n/c.v),r=n%c.v;let l=c.l;if(q>1&&l!=="mille")l+="s";let p=(l==="mille"&&q===1)?"":cFr(q)+" ";return p+l+(r===0?"":" "+cFr(r))}}return"";}
         function cEn(n){const u=['','one','two','three','four','five','six','seven','eight','nine'],t=['','ten','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];if(n===0)return"";if(n<10)return u[n];if(n<20)return['ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'][n-10];if(n<100)return t[Math.floor(n/10)]+(n%10!==0?"-"+u[n%10]:"");if(n<1000)return u[Math.floor(n/100)]+" hundred"+(n%100!==0?" "+cEn(n%100):"");const ch=[{v:1e9,l:"billion"},{v:1e6,l:"million"},{v:1e3,l:"thousand"}];for(let c of ch)if(n>=c.v)return cEn(Math.floor(n/c.v))+" "+c.l+(n%c.v!==0?", "+cEn(n%c.v):"");}
         function cAr(n){const u=['','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة'],t=['','عشرة','عشرون','ثلاثون','أربعون','خمسون','ستون','سبعون','ثمانون','تسعون'];if(n===0)return"";if(n<10)return u[n];if(n<20)return['عشرة','أحد عشر','اثنا عشر','ثلاثة عشر','أربعة عشر','خمسة عشر','ستة عشر','سبعة عشر','ثمانية عشر','تسعة عشر'][n-10];if(n<100){const r=n%10,d=Math.floor(n/10);return r===0?t[d]:u[r]+" و "+t[d]}if(n<1000){const h=Math.floor(n/100),r=n%100;let hw=h===1?"مائة":h===2?"مائتان":u[h]+"مائة";return r===0?hw:hw+" و "+cAr(r)}const ch=[{v:1e9,l:"مليار",d:"ملياران",p:"مليارات"},{v:1e6,l:"مليون",d:"مليونان",p:"ملايين"},{v:1e3,l:"ألف",d:"ألفان",p:"آلاف"}];for(let c of ch)if(n>=c.v){const q=Math.floor(n/c.v),r=n%c.v;let p="";if(q===1)p=c.l;else if(q===2)p=c.d;else if(q>=3&&q<=10)p=cAr(q)+" "+c.p;else p=cAr(q)+" "+c.l;return r===0?p:p+" و "+cAr(r)}}
 
-        // UI Logic
         function getCurName(v, t, s) { const c=config.currencies[t]; if(state.lang==='ar'){const a=c.ar;return s?(v===1?a.ss:v===2?a.sd:v<=10?a.sp:a.sdef):(v===1?a.s:v===2?a.d:v<=10?a.p:a.def)}const l=c[state.lang];return s?(v>1?l.sp:l.s):(v>1?l.p:l.n)}
 
         function update() {
@@ -129,70 +126,4 @@
                 let res = clean ? (eval(clean) || 0) : 0;
                 res = Math.round(res * 100) / 100;
                 if(!isFinite(res)) res=0;
-                if(res > 999999999999) { document.getElementById('main-display').innerText="Trop Grand"; return; }
-                
-                state.val = res;
-                document.getElementById('input-display').value = state.expr;
-                document.getElementById('main-display').innerHTML = res.toLocaleString('fr') + (state.mode==='currency' ? ` <span style="font-size:0.6em;color:#4ade80">${config.currencies[state.cur].sym}</span>` : '');
-                
-                // Text conversion
-                let txt = "";
-                const intP = Math.floor(res), decP = Math.round((res - intP)*100);
-                const cv = state.lang==='fr'?cFr:state.lang==='en'?cEn:cAr;
-                const iTxt = intP===0?config.lang[state.lang].zero:cv(intP);
-                
-                if(state.mode === 'number') {
-                    txt = iTxt + (decP>0 ? ` ${config.lang[state.lang].pt} ${cv(decP)}` : '');
-                } else {
-                    const sep = config.lang[state.lang].and;
-                    txt = `${iTxt} ${getCurName(intP, state.cur, false)}`;
-                    if(decP > 0) txt += ` ${sep} ${cv(decP)} ${getCurName(decP, state.cur, true)}`;
-                }
-                document.getElementById('text-result').innerText = txt.charAt(0).toUpperCase() + txt.slice(1);
-                
-                // RTL handling
-                const isAr = state.lang === 'ar';
-                document.body.dir = isAr ? 'rtl' : 'ltr';
-                document.body.classList.toggle('font-arabic', isAr);
-                
-                // Update templates
-                document.querySelectorAll('.btn-template').forEach(b => {
-                   if(b.innerText.includes('Aucun')) b.innerText = isAr ? "لا شيء" : "Aucun";
-                   if(b.innerText.includes('Chèque') || b.innerText.includes('شيك')) b.innerText = isAr ? "شيك" : "Chèque";
-                   if(b.innerText.includes('Facture') || b.innerText.includes('فاتورة')) b.innerText = isAr ? "فاتورة" : "Facture";
-                   if(b.innerText.includes('Contrat') || b.innerText.includes('عقد')) b.innerText = isAr ? "عقد" : "Contrat";
-                });
-                
-            } catch(e) {}
-        }
-
-        function press(k) {
-            if(navigator.vibrate) navigator.vibrate(20);
-            if(k==='C') { state.expr=''; }
-            else if(k==='DEL') { state.expr=state.expr.slice(0,-1); }
-            else { state.expr += k; }
-            update();
-        }
-
-        function setLang(l) { state.lang = l; document.querySelectorAll('.btn-lang').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); update(); }
-        function setMode(m) { state.mode = m; document.getElementById('currency-select').style.display = m==='currency'?'inline-block':'none'; update(); }
-        function setTemplate(t) { state.tpl = t; document.querySelectorAll('.btn-template').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); }
-        
-        function copyResult(type) {
-            let txt = document.getElementById('text-result').innerText;
-            if(state.tpl !== 'none') txt = config.lang[state.lang].tpl[state.tpl] + txt;
-            if(type === 'full') txt += ` (${state.val} ${config.currencies[state.cur].sym})`;
-            navigator.clipboard.writeText(txt);
-            alert(state.lang==='ar' ? "تم النسخ!" : "Copié !");
-        }
-
-        // SW Register
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(() => console.log('SW OK'));
-        }
-        
-        // Init
-        update();
-    </script>
-</body>
-</html>
+                if(res > 999999999999) { document.getElementById('main-display').innerText
