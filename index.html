@@ -8,7 +8,6 @@
     <meta name="theme-color" content="#0f172a">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Intégré */
         :root { --bg: #f1f5f9; --text: #1e293b; --primary: #4f46e5; --dark: #0f172a; }
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .font-arabic { font-family: 'Tajawal', sans-serif; }
@@ -34,19 +33,18 @@
         .key:active { transform: translateY(2px); border-bottom: none; background: #f1f5f9; }
         .key.op { background: #eef2ff; color: var(--primary); border-color: #c7d2fe; }
         .key.del { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="btn-group">
-            <button class="btn-lang active" onclick="setLang('fr')">FR</button>
-            <button class="btn-lang" onclick="setLang('en')">EN</button>
-            <button class="btn-lang" onclick="setLang('ar')">AR</button>
+            <button class="btn-lang active" onclick="setLang('fr', this)">FR</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="btn-lang" onclick="setLang('ar', this)">AR</button>
         </div>
         <div class="btn-group">
-            <button class="btn-lang active" onclick="setMode('currency')">DEV</button>
-            <button class="btn-lang" onclick="setMode('number')">123</button>
+            <button class="btn-lang active" onclick="setMode('currency', this)">DEV</button>
+            <button class="btn-lang" onclick="setMode('number', this)">123</button>
         </div>
         <select id="currency-select" onchange="update()" style="background:#1e293b; color:white; border:none; font-weight:bold; outline:none;">
             <option value="DZD">DA</option>
@@ -57,15 +55,15 @@
 
     <div class="display-area">
         <input type="text" id="input-display" readonly placeholder="0">
-        <div id="main-display">0 <span id="currency-symbol" style="color:#4ade80; font-size:20px; vertical-align:top">DA</span></div>
+        <div id="main-display">0</div>
     </div>
 
     <div class="result-card">
         <div class="template-scroll">
-            <button class="btn-template active" onclick="setTemplate('none')">Aucun</button>
-            <button class="btn-template" onclick="setTemplate('check')">Chèque</button>
-            <button class="btn-template" onclick="setTemplate('invoice')">Facture</button>
-            <button class="btn-template" onclick="setTemplate('contract')">Contrat</button>
+            <button class="btn-template active" onclick="setTemplate('none', this)">Aucun</button>
+            <button class="btn-template" onclick="setTemplate('check', this)">Chèque</button>
+            <button class="btn-template" onclick="setTemplate('invoice', this)">Facture</button>
+            <button class="btn-template" onclick="setTemplate('contract', this)">Contrat</button>
         </div>
         <div class="text-result-box">
             <div id="text-result">...</div>
@@ -73,8 +71,8 @@
     </div>
 
     <div class="copy-actions">
-        <button class="btn-copy txt" onclick="copyResult('text')">📄 <span>TEXTE SEUL</span></button>
-        <button class="btn-copy full" onclick="copyResult('full')">📋 <span>TOUT COPIER</span></button>
+        <button class="btn-copy txt" onclick="copyResult('text')">📄 <span>TEXTE</span></button>
+        <button class="btn-copy full" onclick="copyResult('full')">📋 <span>TOUT</span></button>
     </div>
 
     <div class="keypad">
@@ -126,4 +124,71 @@
                 let res = clean ? (eval(clean) || 0) : 0;
                 res = Math.round(res * 100) / 100;
                 if(!isFinite(res)) res=0;
-                if(res > 999999999999) { document.getElementById('main-display').innerText
+                
+                state.val = res;
+                document.getElementById('input-display').value = state.expr;
+                document.getElementById('main-display').innerHTML = res.toLocaleString('fr') + (state.mode==='currency' ? ` <span style="font-size:0.6em;color:#4ade80">${config.currencies[state.cur].sym}</span>` : '');
+                
+                let txt = "";
+                const intP = Math.floor(res), decP = Math.round((res - intP)*100);
+                const cv = state.lang==='fr'?cFr:state.lang==='en'?cEn:cAr;
+                const iTxt = intP===0?config.lang[state.lang].zero:cv(intP);
+                
+                if(state.mode === 'number') {
+                    txt = iTxt + (decP>0 ? ` ${config.lang[state.lang].pt} ${cv(decP)}` : '');
+                } else {
+                    const sep = config.lang[state.lang].and;
+                    txt = `${iTxt} ${getCurName(intP, state.cur, false)}`;
+                    if(decP > 0) txt += ` ${sep} ${cv(decP)} ${getCurName(decP, state.cur, true)}`;
+                }
+                
+                let finalTxt = txt.charAt(0).toUpperCase() + txt.slice(1);
+                if(state.tpl !== 'none') {
+                    finalTxt = config.lang[state.lang].tpl[state.tpl] + finalTxt;
+                }
+                document.getElementById('text-result').innerText = finalTxt;
+                
+                const isAr = state.lang === 'ar';
+                document.body.dir = isAr ? 'rtl' : 'ltr';
+                document.body.classList.toggle('font-arabic', isAr);
+                
+                document.querySelectorAll('.btn-template').forEach(b => {
+                   const t = b.innerText;
+                   if(t.match(/Aucun|لا شيء/)) b.innerText = isAr ? "لا شيء" : "Aucun";
+                   if(t.match(/Chèque|شيك/)) b.innerText = isAr ? "شيك" : "Chèque";
+                   if(t.match(/Facture|فاتورة/)) b.innerText = isAr ? "فاتورة" : "Facture";
+                   if(t.match(/Contrat|عقد/)) b.innerText = isAr ? "عقد" : "Contrat";
+                });
+            } catch(e) {}
+        }
+
+        function press(k) {
+            if(navigator.vibrate) navigator.vibrate(20);
+            if(k==='C') { state.expr=''; }
+            else if(k==='DEL') { state.expr=state.expr.slice(0,-1); }
+            else { state.expr += k; }
+            update();
+        }
+
+        function setLang(l, btn) { state.lang = l; document.querySelectorAll('.btn-lang').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); update(); }
+        function setMode(m, btn) { state.mode = m; document.getElementById('currency-select').style.display = m==='currency'?'inline-block':'none'; document.querySelectorAll('.btn-group button').forEach(b=> { if(b.onclick && b.onclick.toString().includes('setMode')) b.classList.remove('active')}); btn.classList.add('active'); update(); }
+        function setTemplate(t, btn) { state.tpl = t; document.querySelectorAll('.btn-template').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); update(); }
+        
+        function copyResult(type) {
+            let txt = document.getElementById('text-result').innerText;
+            if(type === 'full') txt += ` (${state.val} ${config.currencies[state.cur].sym})`;
+            navigator.clipboard.writeText(txt).then(() => {
+                alert(state.lang==='ar' ? "تم النسخ!" : "Copié !");
+            });
+        }
+
+        // SW : Nouvelle stratégie pour FORCER la mise à jour
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                reg.update(); // Force la vérification d'une nouvelle version
+            });
+        }
+        update();
+    </script>
+</body>
+</html>
