@@ -6,15 +6,20 @@
     <title>Convertisseur Pro</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5198/5198460.png">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #f1f5f9; --text: #1e293b; --primary: #4f46e5; --dark: #0f172a; }
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .font-arabic { font-family: 'Tajawal', sans-serif; }
+        
+        /* HEADER */
         .header { background: var(--dark); color: white; padding: 15px; padding-top: env(safe-area-inset-top); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .btn-group { background: #1e293b; padding: 4px; border-radius: 8px; display: flex; gap: 4px; }
         .btn-lang { background: transparent; border: none; color: #94a3b8; padding: 5px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; }
         .btn-lang.active { background: var(--primary); color: white; }
+        
+        /* ECRAN RESULTAT */
         .display-area { background: var(--dark); padding: 20px; text-align: right; border-bottom: 1px solid #1e293b; }
         #input-display { width: 100%; background: transparent; border: none; color: #64748b; font-size: 24px; text-align: right; font-family: monospace; outline: none; }
         #main-display { font-size: 42px; font-weight: bold; color: white; margin: 0; font-family: monospace; overflow-x: auto; white-space: nowrap; }
@@ -24,15 +29,30 @@
         .btn-template.active { background: var(--primary); color: white; border-color: var(--primary); }
         .text-result-box { background: white; padding: 15px; border-radius: 12px; min-h: 80px; display: flex; align-items: center; border: 1px solid #e0e7ff; position: relative; }
         #text-result { font-size: 18px; font-weight: 500; line-height: 1.4; color: var(--text); width: 100%; }
+        
+        /* ACTIONS */
         .copy-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; background: white; }
         .btn-copy { padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; }
         .btn-copy.txt { background: #f1f5f9; color: #475569; }
         .btn-copy.full { background: var(--dark); color: white; }
+        
+        /* CLAVIER */
         .keypad { flex: 1; background: white; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
         .key { border: none; background: #f8fafc; border-bottom: 2px solid #e2e8f0; border-radius: 12px; font-size: 22px; font-weight: bold; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
         .key:active { transform: translateY(2px); border-bottom: none; background: #f1f5f9; }
         .key.op { background: #eef2ff; color: var(--primary); border-color: #c7d2fe; }
         .key.del { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+
+        /* INSTALL BANNER */
+        #install-prompt { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); z-index: 1000; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; text-align: center; }
+        #install-prompt.show { transform: translateY(0); }
+        .install-icon { width: 60px; height: 60px; margin-bottom: 10px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .install-title { font-weight: bold; font-size: 18px; margin-bottom: 5px; color: var(--dark); }
+        .install-desc { font-size: 14px; color: #64748b; margin-bottom: 15px; max-width: 80%; }
+        .install-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; width: 80%; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+        .close-install { color: #94a3b8; background: none; border: none; font-size: 14px; text-decoration: underline; cursor: pointer; padding: 10px; }
+        .ios-instruction { display: none; background: #f1f5f9; padding: 10px; border-radius: 8px; font-size: 13px; color: #475569; margin-bottom: 10px; }
+        .ios-icon { vertical-align: middle; margin: 0 4px; }
     </style>
 </head>
 <body>
@@ -95,6 +115,20 @@
         <button class="key" onclick="press('0')" style="grid-column: span 2">0</button>
         <button class="key" onclick="press('.')">.</button>
         <button class="key del" onclick="press('DEL')">⌫</button>
+    </div>
+
+    <div id="install-prompt">
+        <img src="https://cdn-icons-png.flaticon.com/512/5198/5198460.png" class="install-icon" alt="Icon">
+        <div class="install-title">Installer l'application</div>
+        <div class="install-desc">Installez Convertisseur Pro pour un accès rapide et hors ligne.</div>
+        
+        <button id="btn-install" class="install-btn">Installer maintenant</button>
+        
+        <div id="ios-help" class="ios-instruction">
+            Appuyez sur <span style="font-size:18px">⎋</span> (Partager) puis sur<br><strong>"Sur l'écran d'accueil"</strong> <span style="font-size:18px">⊞</span>
+        </div>
+
+        <button class="close-install" onclick="closeInstall()">Plus tard</button>
     </div>
 
     <script>
@@ -182,11 +216,52 @@
             });
         }
 
-        // SW : Nouvelle stratégie pour FORCER la mise à jour
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(reg => {
-                reg.update(); // Force la vérification d'une nouvelle version
+        // --- INSTALLATION SYSTEM ---
+        let deferredPrompt;
+        const installModal = document.getElementById('install-prompt');
+        const installBtn = document.getElementById('btn-install');
+        const iosHelp = document.getElementById('ios-help');
+
+        // Détection si on est déjà en mode App (Standalone)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        if (!isStandalone) {
+            // Android / Chrome
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                setTimeout(() => installModal.classList.add('show'), 2000); // Affiche après 2s
             });
+
+            // iOS (Pas d'événement automatique, on check juste l'agent)
+            if (isIOS) {
+                setTimeout(() => {
+                    installBtn.style.display = 'none'; // Cache le bouton Android
+                    iosHelp.style.display = 'block'; // Affiche l'aide iOS
+                    installModal.classList.add('show');
+                }, 2000);
+            }
+        }
+
+        installBtn.addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        installModal.classList.remove('show');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
+
+        function closeInstall() {
+            installModal.classList.remove('show');
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(reg => { reg.update(); });
         }
         update();
     </script>
