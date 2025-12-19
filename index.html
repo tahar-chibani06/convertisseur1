@@ -154,6 +154,9 @@
 
         function update() {
             try {
+                // CORRECTION ICI : On force la mise à jour de la monnaie
+                state.cur = document.getElementById('currency-select').value;
+
                 let clean = state.expr.replace(/[^-()\d/*+.]/g, '');
                 let res = clean ? (eval(clean) || 0) : 0;
                 res = Math.round(res * 100) / 100;
