@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Convertisseur Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="./icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="btn-group">
+            <button class="btn-lang active" data-lang="fr">FR</button>
+            <button class="btn-lang" data-lang="en">EN</button>
+            <button class="btn-lang" data-lang="ar">AR</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn-lang active" data-mode="currency">DEV</button>
+            <button class="btn-lang" data-mode="number">123</button>
+        </div>
+        <select id="currency-select"
+            style="background:#1e293b; color:white; border:none; font-weight:bold; outline:none;">
+            <option value="DZD">DA</option>
+            <option value="EUR">€</option>
+            <option value="USD">$</option>
+        </select>
+    </div>
+
+    <div class="app">
+        <div class="left">
+            <div class="display-area">
+                <input type="text" id="input-display" readonly placeholder="0">
+                <div id="main-display">0</div>
+            </div>
+
+            <div class="result-card">
+                <div class="template-scroll">
+                    <button class="btn-template active" data-tpl="none">Aucun</button>
+                    <button class="btn-template" data-tpl="check">Chèque</button>
+                    <button class="btn-template" data-tpl="invoice">Facture</button>
+                    <button class="btn-template" data-tpl="contract">Contrat</button>
+                </div>
+                <div style="display: flex; gap: 6px; flex: 1; min-height: 0;">
+                    <div class="text-result-box">
+                        <div id="text-result">...</div>
+                    </div>
+                    <div class="copy-actions">
+                        <button class="btn-copy txt">📄 <span>TEXTE</span></button>
+                        <button class="btn-copy full">📋 <span>TOUT</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right">
+            <div class="keypad">
+                <button class="key op" data-val="C">AC</button>
+                <button class="key op" data-val="%">%</button>
+                <button class="key op" data-val="/">÷</button>
+                <button class="key op" data-val="*">×</button>
+
+                <button class="key" data-val="7">7</button>
+                <button class="key" data-val="8">8</button>
+                <button class="key" data-val="9">9</button>
+                <button class="key op" data-val="-">-</button>
+
+                <button class="key" data-val="4">4</button>
+                <button class="key" data-val="5">5</button>
+                <button class="key" data-val="6">6</button>
+                <button class="key op" data-val="+">+</button>
+
+                <button class="key" data-val="1">1</button>
+                <button class="key" data-val="2">2</button>
+                <button class="key" data-val="3">3</button>
+                <button class="key op" data-val="=">=</button>
+
+                <button class="key" data-val="0" style="grid-column: span 2">0</button>
+                <button class="key" data-val=".">.</button>
+                <button class="key del" data-val="DEL">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="install-prompt">
+        <img src="./icon.png" class="install-icon" alt="Icon">
+        <div class="install-title">Installer l'application</div>
+        <div class="install-desc">Installez Convertisseur Pro pour un accès rapide et hors ligne.</div>
+
+        <button id="btn-install" class="install-btn">Installer maintenant</button>
+
+        <div id="ios-help" class="ios-instruction">
+            Appuyez sur <span style="font-size:18px">⎋</span> (Partager) puis sur<br><strong>"Sur l'écran
+                d'accueil"</strong> <span style="font-size:18px">⊞</span>
+        </div>
+
+        <button class="close-install" onclick="closeInstall()">Plus tard</button>
+    </div>
+
+    <script src="locales.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
