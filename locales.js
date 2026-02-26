@@ -5,9 +5,9 @@ const config = {
         USD: { sym: "$", fr: { n: "dollar", p: "dollars", s: "cent", sp: "cents" }, en: { n: "dollar", p: "dollars", s: "cent", sp: "cents" }, ar: { s: "دولار", d: "دولاران", p: "دولارات", def: "دولار", ss: "سنت", sd: "سنتان", sp: "سنتات", sdef: "سنت" } }
     },
     lang: {
-        fr: { and: "et", zero: "zéro", pt: "virgule", tpl: {check: "Payez contre ce chèque la somme de : ", invoice: "Arrêté la présente facture à la somme de : ", contract: "Le montant total s'élève à : "} },
-        en: { and: "and", zero: "zero", pt: "point", tpl: {check: "Pay against this check the sum of: ", invoice: "Total invoice amount fixed at: ", contract: "The total amount is: "} },
-        ar: { and: "و", zero: "صفر", pt: "فاصل", tpl: {check: "ادفعوا بموجب هذا الصك مبلغ : ", invoice: "توقفت الفاتورة عند مبلغ : ", contract: "المبلغ الإجمالي هو : "} }
+        fr: { and: "et", zero: "zéro", pt: "virgule", tpl: { check: "Payez contre ce chèque la somme de : ", invoice: "Arrêté la présente facture à la somme de : ", contract: "Le montant total s'élève à : " } },
+        en: { and: "and", zero: "zero", pt: "point", tpl: { check: "Pay against this check the sum of: ", invoice: "Total invoice amount fixed at: ", contract: "The total amount is: " } },
+        ar: { and: "و", zero: "صفر", pt: "فاصل", tpl: { check: "ادفعوا بموجب هذا الصك مبلغ : ", invoice: "توقفت الفاتورة عند مبلغ : ", contract: "المبلغ الإجمالي هو : " } }
     }
 };
 
@@ -24,11 +24,10 @@ function cFr(n) {
             const o = t === 7 ? 60 : 80,
                 p = t === 7 ? "soixante" : "quatre-vingt",
                 c = (t === 7 && r === 1) ? " et " : "-";
-            if (n === 80) return "quatre-vingts";
             return p + c + cFr(n - o);
         }
         const tw = ts[t];
-        if (r === 0) return tw;
+        if (r === 0) return t === 8 ? "quatre-vingts" : tw;
         if (r === 1 && t !== 8) return tw + " et un";
         return tw + "-" + u[r];
     }
@@ -98,7 +97,8 @@ function getCurName(v, t, s, lang) {
         return s ? (v === 1 ? a.ss : v === 2 ? a.sd : v <= 10 ? a.sp : a.sdef) : (v === 1 ? a.s : v === 2 ? a.d : v <= 10 ? a.p : a.def)
     }
     const l = c[lang];
-    return s ? (v > 1 ? l.sp : l.s) : (v > 1 ? l.p : l.n)
+    // En français, zéro (v=0) prend le pluriel comme 2+
+    return s ? (v <= 1 && v !== 0 ? l.s : l.sp) : (v <= 1 && v !== 0 ? l.n : l.p)
 }
 
 // Export for use in app.js

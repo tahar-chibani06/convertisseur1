@@ -1,5 +1,5 @@
 /**
- * Convertisseur Pro - Main Application Logic
+ * Chiffres en Lettres - Main Application Logic
  */
 
 let state = { expr: '', val: 0, lang: 'fr', cur: 'DZD', mode: 'currency', tpl: 'none' };
@@ -62,7 +62,10 @@ function update() {
             txt = iTxt + (decP > 0 ? ` ${config.lang[state.lang].pt} ${cv(decP)}` : '');
         } else {
             const sep = config.lang[state.lang].and;
-            txt = `${iTxt} ${getCurName(intP, state.cur, false, state.lang)}`;
+            // En français: "un million DE dinars" (préposition 'de' si multiple exact de million/milliard)
+            const needsDe = state.lang === 'fr' && intP >= 1e6 && intP % 1e6 === 0;
+            const curSep = needsDe ? ' de ' : ' ';
+            txt = `${iTxt}${curSep}${getCurName(intP, state.cur, false, state.lang)}`;
             if (decP > 0) txt += ` ${sep} ${cv(decP)} ${getCurName(decP, state.cur, true, state.lang)}`;
         }
 
@@ -233,4 +236,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     update();
+
+    // --- Splash Screen ---
+    const splashScreen = document.getElementById('splash-screen');
+    if (splashScreen) {
+        // Fermer le splash après 2.5s
+        const hideSplash = () => {
+            splashScreen.classList.add('hide');
+            // Retirer du DOM après la transition
+            setTimeout(() => splashScreen.remove(), 750);
+        };
+        // Auto-dismiss
+        setTimeout(hideSplash, 2500);
+        // Clic pour passer directement
+        splashScreen.addEventListener('click', hideSplash);
+    }
 });

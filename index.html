@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Convertisseur Pro</title>
+    <title>Chiffres en Lettres</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="apple-touch-icon" href="./icon.png">
@@ -15,6 +15,24 @@
 </head>
 
 <body>
+
+    <!-- ===== SPLASH SCREEN ===== -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo-wrap">
+                <img src="./logo.png" alt="Chiffres en Lettres" class="splash-logo">
+                <div class="splash-rings">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <p class="splash-tagline">Convertisseur de montants en toutes langues</p>
+        </div>
+        <footer class="splash-footer">
+            <span class="splash-created">Created by</span>
+            <span class="splash-brand">ASSIREM MEDIA</span>
+        </footer>
+    </div>
+
     <div class="header">
         <div class="btn-group">
             <button class="btn-lang active" data-lang="fr">FR</button>
@@ -91,7 +109,7 @@
     <div id="install-prompt">
         <img src="./icon.png" class="install-icon" alt="Icon">
         <div class="install-title">Installer l'application</div>
-        <div class="install-desc">Installez Convertisseur Pro pour un accès rapide et hors ligne.</div>
+        <div class="install-desc">Installez Chiffres en Lettres pour un accès rapide et hors ligne.</div>
 
         <button id="btn-install" class="install-btn">Installer maintenant</button>
 

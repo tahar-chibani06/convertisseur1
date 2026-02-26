@@ -1,18 +1,25 @@
 {
-  "name": "Convertisseur Pro",
-  "short_name": "ConvertPro",
+  "name": "Chiffres en Lettres",
+  "short_name": "Chiffres",
   "id": "/convertisseur-pro/",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "display_override": [
+    "window-controls-overlay",
+    "minimal-ui"
+  ],
   "background_color": "#6366f1",
   "theme_color": "#0f172a",
   "orientation": "portrait",
-  "description": "Convertisseur de chiffres en lettres et devises avec calculatrice intégrée.",
+  "description": "Convertisseur de chiffres en lettres et devises. Supporte le français, l'anglais et l'arabe.",
   "lang": "fr",
   "dir": "ltr",
-  "categories": ["productivity", "finance", "utilities"],
+  "categories": [
+    "productivity",
+    "finance",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "./icon.png",
@@ -23,16 +30,16 @@
   ],
   "screenshots": [
     {
-      "src": "./screen1.png",
+      "src": "./screen1.jpg",
       "sizes": "1080x1920",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Écran principal"
     },
     {
-      "src": "./screen1.png",
+      "src": "./screen1.jpg",
       "sizes": "1080x1920",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "Version Mobile"
     }
