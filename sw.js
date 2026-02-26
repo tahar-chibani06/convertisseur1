@@ -2,6 +2,10 @@ const CACHE_NAME = 'convert-pro-vanilla-v1';
 const ASSETS = [
   './',
   './index.html',
+  './style.css',
+  './app.js',
+  './locales.js',
+  './icon.png',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap'
 ];
